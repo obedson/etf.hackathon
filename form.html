@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Location Form</title>
+    <link rel="stylesheet" href="./assets/css/form.css">
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span class="hamburger">&#9776;</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="locationSearch.html">Find a Workspace</a></li>
+                <li><a href="form.html">Share your workspace</a></li>
+                <li><a href="#team.html">About Us</a></li>
+            </ul>
+            <div class="profile-icon">
+                <img src="./assets/images/profile_icon.jpg" alt="Profile Icon" class="profile-logo">
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>List Your Workspace</h2>
+        <form id="location-form">
+            <div class="tag-input-container">
+                <label for="location-name">Your Workspace Location:</label>
+                <input type="text" id="location-name" class="tag-input" autocomplete="off" placeholder="Start typing a location...">
+                <span class="input-hint">Select a location from the suggestions</span>
+                <ul id="location-suggestions" class="suggestions-list"></ul>
+            </div>
+            
+            <label for="full-address">Full Address:</label>
+            <textarea id="full-address" placeholder="Enter full address"></textarea>
+
+            <label for="owner-name">Owner Name:</label>
+            <input type="text" id="owner-name" placeholder="Enter your name">
+
+            <div class="tag-input-container">
+                <label for="available-courses">Available Courses:</label>
+                <input type="text" id="available-courses" class="tag-input" placeholder="Type course name and press Enter">
+                <span class="input-hint">Type to search existing courses or create new ones by pressing Enter</span>
+                <ul id="course-suggestions" class="suggestions-list"></ul>
+                <div id="course-tags" class="tags-container"></div>
+            </div>
+
+            <div class="tag-input-container">
+                <label for="available-resources">Available Resources:</label>
+                <input type="text" id="available-resources" class="tag-input" placeholder="Type resource name and press Enter">
+                <span class="input-hint">Type to search existing resources or create new ones by pressing Enter</span>
+                <ul id="resource-suggestions" class="suggestions-list"></ul>
+                <div id="resource-tags" class="tags-container"></div>
+            </div>
+
+            <label for="seating-capacity">Seating Capacity:</label>
+            <select id="seating-capacity">
+                <option value="">Select Number of Seats Available</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="none">None</option>
+            </select>
+
+            <label for="description">Description:</label>
+            <textarea id="workspace-description" placeholder="Enter description"></textarea>
+
+            <label for="price">Price:</label>
+            <input type="text" id="price" placeholder="Enter price">
+
+            <label for="owner-phone">Phone Number:</label>
+            <input type="text" id="owner-phone" placeholder="Enter phone number">
+
+            <label for="image-upload">Upload workspace Image:</label>
+            <input type="file" id="image-upload" accept="image/*">
+
+            <input type="hidden" id="latitude">
+            <input type="hidden" id="longitude">
+
+            <button type="button" id="submit-button">Submit</button>
+        </form>
+    </div>
+
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Add Leaflet Control Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script type="module" src="./assets/js/form.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

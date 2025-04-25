@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Details</title>
+    <link rel="stylesheet" href="./assets/css/workspaceDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span class="hamburger">&#9776;</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="locationSearch.html">Find a Workspace</a></li>
+                <li><a href="form.html">Share your workspace</a></li>
+                <li><a href="team.html">About Us</a></li>
+            </ul>
+            <div class="profile-icon">
+                <img src="./assets/images/profile_icon.jpg" alt="Profile Icon" class="profile-logo">
+            </div>
+        </nav>
+    </header>
+
+    <main class="workspace-container">
+        <!-- Image Gallery -->
+        <section class="gallery-section">
+            <div class="gallery">
+                <div class="gallery-main">
+                    <img id="workspace-main-image" src="" alt="Workspace main image">
+                </div>
+                <div class="gallery-thumbnails">
+                    <img src="" alt="Workspace image 1">
+                    <img src="" alt="Workspace image 2">
+                    <img src="" alt="Workspace image 3">
+                    <img src="" alt="Workspace image 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Workspace Details -->
+        <section class="details-section">
+            <div class="workspace-header">
+                <h1 id="workspace-name"></h1>
+                <div class="workspace-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="workspace-address"></span>
+                </div>
+            </div>
+
+            <div class="workspace-host">
+                <h2>Hosted by <span id="host-name"></span></h2>
+                <p><i class="fas fa-phone"></i> <span id="host-phone"></span></p>
+            </div>
+
+            <hr class="divider">
+
+            <div class="workspace-description">
+                <h2>About this space</h2>
+                <p id="workspace-description-text"></p>
+            </div>
+
+            <div class="amenities">
+                <h2>What this place offers</h2>
+                <div class="amenities-grid" id="amenities-container">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Card -->
+        <aside class="booking-card">
+            <div class="price">₦<span id="workspace-price"></span> <span>per day</span></div>
+            
+            <div class="booking-form">
+                <div class="form-group">
+                    <label for="check-in">Date</label>
+                    <input type="date" id="check-in">
+                </div>
+                
+                <div class="form-group">
+                    <label for="hours">Hours</label>
+                    <select id="hours">
+                        <option value="4">4 hours</option>
+                        <option value="8">8 hours</option>
+                        <option value="12">12 hours</option>
+                        <option value="24">Full day</option>
+                    </select>
+                </div>
+                
+                <button class="book-button">Reserve</button>
+            </div>
+        </aside>
+    </main>
+
+    <script type="module" src="./assets/js/workspaceDetails.js"></script>
+    
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

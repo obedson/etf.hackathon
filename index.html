@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Peerflo</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <img
+          class="logo"
+          src="./assets/images/peerflo_logo.png"
+          alt="Peerflo Logo"
+        />
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="locationSearch.html">Find a Workspace</a></li>
+          <li><a href="form.html">Share your workspace</a></li>
+          <li><a href="#team.html">About Us</a></li>
+          <!-- <li><a href="#contact-us">CONTACT US</a></li> -->
+        </ul>
+        <div class="profile-icon">
+          <img
+            src="./assets/images/profile_icon.gif"
+            alt="Profile Icon"
+            class="profile-logo"
+          />
+          <!-- <div class="menu-toggle" onclick="toggleMenu()"> -->
+          <span onclick="toggleMenu()" class="hamburger">&#9776;</span>
+          <!-- </div> -->
+        </div>
+      </nav>
+      <ul class="mobile">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="locationSearch.html">Search Workspace Locations</a></li>
+        <li><a href="form.html">Share Shop Lcation</a></li>
+        <li><a href="#team.html">About Us</a></li>
+        <!-- <li><a href="#contact-us">CONTACT US</a></li> -->
+      </ul>
+    </header>
+
+    <!-- Main Content Section -->
+    <main>
+      <!-- Waste Type Carousel Section -->
+      <section class="carousel-section">
+        <div class="carousel">
+          <div class="slide">
+            <img
+              src="./assets/images/coworking_2.jpg"
+              alt="Gaming Headset"
+            />
+          </div>
+          <div class="slide">
+            <img
+              src="./assets/images/coworking_1.jpg"
+              alt="Gaming Keyboard"
+            />
+          </div>
+          <div class="slide">
+            <img
+              src="./assets/images/workspace_3.jpg"
+              alt=" Wifi Extender"
+            />
+          </div>
+          <div class="slide">
+            <img
+              src="./assets/images/coworking_3.jpg"
+              alt="Laptop"
+            />
+          </div>
+          <div class="slide">
+            <img
+              src="./assets/images/coworking_4.jpg"
+              alt="Lightweight  Sport Shoes"
+            />
+          </div>
+          <div class="slide">
+            <img
+              src="./assets/images/coworking_2.jpg"
+              alt="Sports Shoe"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Description & Call-to-Action Section -->
+      <section class="cta-section">
+        <h2>Welcome to Peerflo, <br> List or discover nearby coworking spaces, connect with peers, share resources <br> and collaborate for skill-building
+          and growth in your local community.</h2>
+        
+        <a href="locationSearch.html"
+          ><button class="cta-button">Get Started</button></a
+        >
+      </section>
+
+      <!-- Global Waste Data Representation Section -->
+      <section class="data-section">
+        <h2>Trending Locations</h2>
+        <div class="chart-container">
+          <canvas id="myChart"></canvas>
+        </div>
+        <!-- <div class="chart-container">
+          <img
+            src="https://datatopics.worldbank.org/what-a-waste/img/v2_projected_waste_generation.png"
+            alt="Waste Data Chart"
+          />
+        </div> -->
+        <p>
+          Peerflo empowers you to:
+           <br>Discover: Find nearby peer learning hubs, resources and coworking spaces around your location.
+           <br>Earn: List your workspace or learning group and earn from bookings or collaborations.
+           <br>Connect: Grow your network through local collaborations, peer sessions, and shared projects.
+           <br>Whether you're looking to cowork, teach, or learn new skills — 
+           <br> Peerflo connects your community with growth, income, and opportunity.
+           <br>Join today and unlock the power of local collaboration!
+         </p>
+      </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+      <div class="footer-links">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+      <p>&copy; 2024 Obedson Craft. All rights reserved.</p>
+    </footer>
+    <script type="module" src="./assets/js/chart.js"></script>
+    <script type="module" src="./assets/js/index.js"></script>
+    <script src="./assets/js/util.js "></script>
+  </body>
+</html>

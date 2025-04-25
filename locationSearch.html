@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Search</title>
+    <link rel="stylesheet" href="./assets/css/locationSearch.css">
+    <!-- Leaflet CSS for map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+    <!-- Firebase SDKs -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+    <!-- jQuery for easier DOM manipulation -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span class="hamburger">&#9776;</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="locationSearch.html">Find Workspace</a></li>
+                <li><a href="form.html">Share your Workspace</a></li>
+                <li><a href="team.html">About Us</a></li>
+            </ul>
+            <div class="profile-icon">
+                <img src="./assets/images/profile_icon.gif" alt="Profile Icon" class="profile-logo">
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Find Workspace Near You</h2>
+        <div class="search-form">
+            <div class="form-group">
+                <label for="location-input">Where is Your Location ?</label>
+                <input type="text" id="location-input" placeholder="Start typing your location">
+                <ul id="location-suggestions"></ul>
+            </div>
+            
+            <div class="form-group">
+                <label for="available-courses">What are you interest in ?:</label>
+                <select id="available-courses">
+                    <option value="">Select a skill</option>
+                    <!-- Options will be dynamically added here -->
+                </select>
+            </div>
+            
+            <button id="search-button" class="primary-button">Search Workspaces</button>
+        </div>
+        
+        <div id="map"></div>
+        <div id="product-results"></div>
+    </div>
+
+    <main>
+        <section class="sponsored-section">
+            <h2>Sponsored Workspaces:</h2>
+            <div id="sponsored-results"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Follow us: 
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script type="module" src="./assets/js/locationSearch.js"></script>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

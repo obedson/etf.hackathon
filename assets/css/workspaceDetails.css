@@ -1,0 +1,371 @@
+/* ===== Base Styles (Consistent with Design System) ===== */
+:root {
+  --primary-color: #4a6fa5;
+  --secondary-color: #166088;
+  --accent-color: #4fc3f7;
+  --background-color: #f8f9fa;
+  --text-color: #fff;
+  --light-text: #777;
+  --border-color: #ddd;
+  --white: #fff;
+  --success-color: #28a745;
+  --new-color: #2c3e50;
+  --desc-color: #333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  color: var(--text-color);
+  line-height: 1.6;
+  background-color: var(--background-color);
+}
+
+/* ===== Header Styles ===== */
+header {
+  background-color: var(--new-color);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo img {
+  height: 40px;
+  border-radius: 50%;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin-left: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+
+.profile-logo {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+.hamburger {
+  font-size: 24px;
+  color: var(--primary-color);
+}
+
+/* ===== Main Content Styles ===== */
+.workspace-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 5%;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+/* Gallery Section */
+.gallery-section {
+  grid-column: 1 / -1;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  height: 60vh;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.gallery-main {
+  grid-row: span 2;
+}
+
+.gallery-main img,
+.gallery-thumbnails img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.gallery-thumbnails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.gallery-thumbnails img:hover,
+.gallery-main img:hover {
+  transform: scale(1.02);
+}
+
+/* Details Section */
+.details-section {
+  background: var(--white);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.workspace-header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: var(--secondary-color);
+}
+
+.workspace-location {
+  display: flex;
+  align-items: center;
+  color: var(--light-text);
+  margin-bottom: 20px;
+}
+
+.workspace-location i {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+.workspace-host {
+  margin: 20px 0;
+}
+
+.workspace-host h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--secondary-color);
+}
+
+.workspace-host p {
+  display: flex;
+  align-items: center;
+  color: var(--light-text);
+}
+
+.workspace-host i {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+.divider {
+  border: none;
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 25px 0;
+}
+
+.workspace-description h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: var(--secondary-color);
+}
+
+.workspace-description p {
+  color: var(--desc-color);
+  line-height: 1.7;
+}
+
+/* Amenities Section */
+.amenities h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.amenity {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: rgba(79, 195, 247, 0.1);
+}
+
+.amenity i {
+  margin-right: 12px;
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+/* Booking Card */
+.booking-card {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+.price span {
+  font-weight: normal;
+  font-size: 16px;
+  color: var(--light-text);
+}
+
+.booking-form {
+  display: grid;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--secondary-color);
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.book-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.book-button:hover {
+  background-color: var(--secondary-color);
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 992px) {
+  .workspace-container {
+      grid-template-columns: 1fr;
+  }
+  
+  .booking-card {
+      position: static;
+      margin-top: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+      padding: 15px 20px;
+  }
+
+  .nav-links {
+      display: none;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      flex-direction: column;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .nav-links.active {
+      display: flex;
+  }
+
+  .nav-links li {
+      margin: 10px 0;
+  }
+
+  .menu-toggle {
+      display: block;
+  }
+
+  .gallery {
+      height: auto;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+  }
+
+  .gallery-main {
+      grid-row: span 1;
+      height: 300px;
+  }
+
+  .gallery-thumbnails {
+      grid-template-columns: repeat(4, 1fr);
+      height: 80px;
+  }
+}
+
+@media (max-width: 576px) {
+  .amenities-grid {
+      grid-template-columns: 1fr;
+  }
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
