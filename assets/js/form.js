@@ -1,9 +1,8 @@
-// Import necessary Firebase functions
+// Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-storage.js";
 
-// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC63fKcQygMGxuaekB3LUhLHBrtePlgorc",
     authDomain: "plasware-pr.firebaseapp.com",
@@ -14,7 +13,6 @@ const firebaseConfig = {
     measurementId: "G-T4YEG16RDC"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -24,17 +22,146 @@ let selectedCourses = [];
 let selectedResources = [];
 let userLat, userLng;
 
+// DOM Content Loaded
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM fully loaded");
+    
+    // Initialize menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    // Initialize form functionality
     initLocationSuggestions();
     initTagInput('available-courses', 'course-suggestions', 'course-tags', selectedCourses, 'courses');
     initTagInput('available-resources', 'resource-suggestions', 'resource-tags', selectedResources, 'resources');
+    
+    // Form submission
+    const form = document.getElementById('workspace-form');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmission);
+    } else {
+        console.error('Form not found!');
+    }
 });
 
-// Initialize tag input with type-ahead
+// Form submission handler
+async function handleFormSubmission(e) {
+    e.preventDefault();
+    console.log("Form submission initiated");
+
+    const submitButton = document.getElementById("submit-button");
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    try {
+        // Validate form
+        if (!validateForm()) {
+            return;
+        }
+
+        // Process form data
+        const formData = {
+            workspaceLocation: document.getElementById("location-name").value,
+            fullAddress: document.getElementById("full-address").value,
+            ownerName: document.getElementById("owner-name").value,
+            price: parseFloat(document.getElementById("price").value),
+            ownerPhone: document.getElementById("owner-phone").value,
+            availableCourses: selectedCourses,
+            resourcesAvailable: selectedResources,
+            workspaceDescription: document.getElementById("workspace-description").value,
+            seatingCapacity: document.getElementById("seating-capacity").value,
+            latitude: parseFloat(document.getElementById("latitude").value),
+            longitude: parseFloat(document.getElementById("longitude").value)
+        };
+
+        // Upload image
+        const imageFile = document.getElementById("image-upload").files[0];
+        const storageRef = ref(storage, 'workspaces/' + Date.now() + '_' + imageFile.name.replace(/\s+/g, '_'));
+        const snapshot = await uploadBytes(storageRef, imageFile);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        formData.imageUrl = downloadURL;
+
+        // Save courses to database
+        for (const course of selectedCourses) {
+            await addCourseToDatabaseIfNew(course);
+        }
+
+        // Save to Firestore
+        await addDoc(collection(db, "workspaces"), {
+            ...formData,
+            createdAt: new Date(),
+            status: "pending"
+        });
+
+        alert("Workspace submitted successfully! It will be reviewed before going live.");
+        window.location.href = 'index.html';
+        
+    } catch (error) {
+        console.error("Form submission error:", error);
+        alert(`Submission failed: ${error.message || "Please try again later."}`);
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit";
+        }
+    }
+}
+
+// Form validation
+function validateForm() {
+    const requiredFields = [
+        'location-name', 'full-address', 'owner-name',
+        'price', 'owner-phone', 'workspace-description',
+        'seating-capacity', 'latitude', 'longitude'
+    ];
+
+    const missingFields = [];
+    
+    requiredFields.forEach(id => {
+        const element = document.getElementById(id);
+        if (!element || !element.value.trim()) {
+            missingFields.push(id.replace('-', ' '));
+        }
+    });
+
+    if (missingFields.length > 0) {
+        alert(`Please fill in the following fields:\n${missingFields.join('\n')}`);
+        return false;
+    }
+
+    if (selectedCourses.length === 0) {
+        alert("Please add at least one course");
+        return false;
+    }
+
+    const imageFile = document.getElementById("image-upload").files[0];
+    if (!imageFile) {
+        alert("Please upload an image of your workspace");
+        return false;
+    }
+
+    if (!imageFile.type.match('image.*')) {
+        alert("Please upload a valid image file (JPEG, PNG, etc.)");
+        return false;
+    }
+
+    return true;
+}
+
+// Tag input initialization
 function initTagInput(inputId, suggestionsId, tagsContainerId, selectedItems, collectionName) {
     const input = document.getElementById(inputId);
     const suggestions = document.getElementById(suggestionsId);
     const tagsContainer = document.getElementById(tagsContainerId);
+
+    if (!input || !suggestions || !tagsContainer) {
+        console.error("Tag input elements not found");
+        return;
+    }
 
     input.addEventListener('input', debounce(() => handleInput(input, suggestions, selectedItems, collectionName), 300));
     input.addEventListener('keydown', (e) => {
@@ -55,10 +182,19 @@ function initTagInput(inputId, suggestionsId, tagsContainerId, selectedItems, co
     });
     
     document.addEventListener('click', (e) => {
-        if (!input.contains(e.target)) {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
             suggestions.style.display = 'none';
         }
     });
+}
+
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
 }
 
 // Handle input with debounce
@@ -84,11 +220,12 @@ async function handleInput(input, suggestions, selectedItems, collectionName) {
     }
 }
 
-// Search courses in Firestore
+// Search functions
 async function searchCourses(searchTerm) {
+    const searchTermLower = searchTerm.toLowerCase();
     const q = query(
         collection(db, "courses"),
-        where("keywords", "array-contains", searchTerm.toLowerCase())
+        where("keywords", "array-contains", searchTermLower)
     );
     
     const querySnapshot = await getDocs(q);
@@ -98,11 +235,11 @@ async function searchCourses(searchTerm) {
     }));
 }
 
-// Search resources in Firestore
 async function searchResources(searchTerm) {
+    const searchTermLower = searchTerm.toLowerCase();
     const q = query(
         collection(db, "resources"),
-        where("keywords", "array-contains", searchTerm.toLowerCase())
+        where("keywords", "array-contains", searchTermLower)
     );
     
     const querySnapshot = await getDocs(q);
@@ -116,39 +253,47 @@ async function searchResources(searchTerm) {
 function displaySuggestions(items, suggestions, selectedItems, input, searchTerm, collectionName) {
     suggestions.innerHTML = '';
     
-    if (items.length > 0) {
-        items.forEach(item => {
-            if (!selectedItems.includes(item.name)) {
-                const li = document.createElement('li');
-                li.textContent = item.name;
-                li.style.padding = '8px';
-                li.style.cursor = 'pointer';
-                
-                li.addEventListener('click', () => {
-                    addItem(item.name, selectedItems, input.parentNode.querySelector('.tags-container'));
-                    input.value = '';
-                    suggestions.style.display = 'none';
-                });
-                
-                suggestions.appendChild(li);
-            }
+    const filteredItems = items.filter(item => 
+        !selectedItems.some(selected => 
+            selected.toLowerCase() === item.name.toLowerCase()
+        )
+    );
+    
+    if (filteredItems.length > 0) {
+        filteredItems.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item.name;
+            li.style.padding = '8px';
+            li.style.cursor = 'pointer';
+            
+            li.addEventListener('click', () => {
+                addItem(item.name, selectedItems, input.parentNode.querySelector('.tags-container'));
+                if (collectionName === 'courses') {
+                    addCourseToDatabaseIfNew(item.name);
+                }
+                input.value = '';
+                suggestions.style.display = 'none';
+            });
+            
+            suggestions.appendChild(li);
         });
     }
     
-    // Add option to create new item if not found
-    if (searchTerm && !items.some(item => item.name.toLowerCase() === searchTerm.toLowerCase())) {
+    if (searchTerm && !items.some(item => 
+        item.name.toLowerCase() === searchTerm.toLowerCase()
+    )) {
         const li = document.createElement('li');
         li.className = 'add-new';
         li.innerHTML = `Add "${searchTerm}" as new ${collectionName === 'courses' ? 'course' : 'resource'}`;
         li.style.padding = '8px';
         li.style.cursor = 'pointer';
+        li.style.fontWeight = '600';
+        li.style.color = '#166088';
         
         li.addEventListener('click', () => {
             addItem(searchTerm, selectedItems, input.parentNode.querySelector('.tags-container'));
             if (collectionName === 'courses') {
                 addCourseToDatabaseIfNew(searchTerm);
-            } else {
-                addResourceToDatabaseIfNew(searchTerm);
             }
             input.value = '';
             suggestions.style.display = 'none';
@@ -162,24 +307,26 @@ function displaySuggestions(items, suggestions, selectedItems, input, searchTerm
 
 // Add item to selected list
 function addItem(itemName, selectedItems, tagsContainer) {
-    if (!itemName || selectedItems.includes(itemName)) return;
+    if (!itemName || selectedItems.some(item => item.toLowerCase() === itemName.toLowerCase())) return;
     
     selectedItems.push(itemName);
     renderTags(selectedItems, tagsContainer);
 }
 
-// Add new course to database if it doesn't exist
+// Add new course to database
 async function addCourseToDatabaseIfNew(courseName) {
     try {
         const q = query(
             collection(db, "courses"),
-            where("name", "==", courseName)
+            where("name_lower", "==", courseName.toLowerCase())
         );
+        
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
             await addDoc(collection(db, "courses"), {
                 name: courseName,
+                name_lower: courseName.toLowerCase(),
                 keywords: generateKeywords(courseName),
                 createdAt: new Date()
             });
@@ -189,18 +336,20 @@ async function addCourseToDatabaseIfNew(courseName) {
     }
 }
 
-// Add new resource to database if it doesn't exist
+// Add new resource to database
 async function addResourceToDatabaseIfNew(resourceName) {
     try {
         const q = query(
             collection(db, "resources"),
-            where("name", "==", resourceName)
+            where("name_lower", "==", resourceName.toLowerCase())
         );
+        
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
             await addDoc(collection(db, "resources"), {
                 name: resourceName,
+                name_lower: resourceName.toLowerCase(),
                 keywords: generateKeywords(resourceName),
                 createdAt: new Date()
             });
@@ -210,17 +359,27 @@ async function addResourceToDatabaseIfNew(resourceName) {
     }
 }
 
-// Generate search keywords
+// Generate keywords
 function generateKeywords(name) {
-    const keywords = [name.toLowerCase()];
-    // Add variations for better searching
-    if (name.includes('/')) {
-        keywords.push(name.replace('/', ' ').toLowerCase());
+    const keywords = new Set();
+    const normalized = name.toLowerCase().trim();
+    
+    keywords.add(normalized);
+    
+    normalized.split(/[\s\/\-_]+/).forEach(part => {
+        if (part.length > 2) {
+            keywords.add(part);
+        }
+    });
+    
+    if (normalized.includes('/')) {
+        keywords.add(normalized.replace(/\//g, ' '));
     }
-    if (name.includes(' ')) {
-        keywords.push(name.replace(' ', '-').toLowerCase());
+    if (normalized.includes(' ')) {
+        keywords.add(normalized.replace(/\s+/g, '-'));
     }
-    return [...new Set(keywords)]; // Remove duplicates
+    
+    return Array.from(keywords);
 }
 
 // Render tags
@@ -237,7 +396,6 @@ function renderTags(items, container) {
         container.appendChild(tag);
     });
     
-    // Add event listeners to remove buttons
     container.querySelectorAll('.remove-tag').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const index = parseInt(e.target.getAttribute('data-index'));
@@ -247,27 +405,24 @@ function renderTags(items, container) {
     });
 }
 
-// Location suggestions functionality
+// Location suggestions
 function initLocationSuggestions() {
     const locationInput = document.getElementById('location-name');
     const suggestionsList = document.getElementById('location-suggestions');
 
-    locationInput.addEventListener('input', function() {
+    if (!locationInput || !suggestionsList) {
+        console.error("Location suggestion elements not found");
+        return;
+    }
+
+    locationInput.addEventListener('input', debounce(function() {
         const query = this.value;
         if (query.length > 2) {
             getLocationSuggestions(query);
         } else {
             suggestionsList.style.display = 'none';
         }
-    });
-
-    function debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
+    }, 300));
 
     async function getLocationSuggestions(query) {
         const nominatimURL = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`;
@@ -314,8 +469,6 @@ function initLocationSuggestions() {
                     document.getElementById('full-address').value = suggestion.name;
                     document.getElementById('latitude').value = suggestion.lat;
                     document.getElementById('longitude').value = suggestion.lng;
-                    userLat = suggestion.lat;
-                    userLng = suggestion.lng;
                     suggestionsList.style.display = 'none';
                 });
                 
@@ -331,114 +484,3 @@ function initLocationSuggestions() {
         }
     });
 }
-
-// Form submission handler
-document.getElementById("submit-button").addEventListener("click", async function() {
-    const submitButton = document.getElementById("submit-button");
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
-    
-    try {
-        // Get form values
-        const workspaceLocation = document.getElementById("location-name").value;
-        const fullAddress = document.getElementById("full-address").value;
-        const ownerName = document.getElementById("owner-name").value;
-        const price = document.getElementById("price").value;
-        const ownerPhone = document.getElementById("owner-phone").value;
-        const workspaceDescription = document.getElementById("workspace-description").value;
-        const seatingCapacity = document.getElementById("seating-capacity").value;
-        const imageFile = document.getElementById("image-upload").files[0];
-        const latitude = document.getElementById("latitude").value;
-        const longitude = document.getElementById("longitude").value;
-        
-        // Check if user has typed but not added courses/resources
-        const typedCourse = document.getElementById("available-courses").value.trim();
-        const typedResource = document.getElementById("available-resources").value.trim();
-        
-        // Validate all required fields
-        const missingFields = [];
-        if (!workspaceLocation) missingFields.push("Workspace Location");
-        if (!fullAddress) missingFields.push("Full Address");
-        if (!ownerName) missingFields.push("Owner Name");
-        if (!price) missingFields.push("Price");
-        if (!ownerPhone) missingFields.push("Phone Number");
-        if (!workspaceDescription) missingFields.push("Description");
-        if (selectedCourses.length === 0 && !typedCourse) missingFields.push("At least one course");
-        if (selectedResources.length === 0 && !typedResource) missingFields.push("At least one resource");
-        if (!seatingCapacity) missingFields.push("Seating Capacity");
-        if (!imageFile) missingFields.push("Workspace Image");
-        if (!latitude || !longitude) missingFields.push("Location Coordinates");
-
-        if (missingFields.length > 0) {
-            // Offer to add typed but not submitted courses/resources
-            if (typedCourse && selectedCourses.length === 0) {
-                if (confirm(`Add "${typedCourse}" as a course offering?`)) {
-                    addCourseToDatabaseIfNew(typedCourse);
-                    addItem(typedCourse, selectedCourses, document.getElementById("course-tags"));
-                    document.getElementById("available-courses").value = '';
-                    return; // Let the form submit on next click
-                }
-            }
-            if (typedResource && selectedResources.length === 0) {
-                if (confirm(`Add "${typedResource}" as an available resource?`)) {
-                    addResourceToDatabaseIfNew(typedResource);
-                    addItem(typedResource, selectedResources, document.getElementById("resource-tags"));
-                    document.getElementById("available-resources").value = '';
-                    return; // Let the form submit on next click
-                }
-            }
-            
-            alert(`Please fill in the following fields:\n${missingFields.join('\n')}`);
-            return;
-        }
-
-        // Validate image file
-        if (!imageFile.type.match('image.*')) {
-            throw new Error('Please upload an image file (JPEG, PNG, etc.)');
-        }
-        if (imageFile.size > 5 * 1024 * 1024) {
-            throw new Error('Image file is too large (max 5MB)');
-        }
-
-        // Upload image to Firebase Storage
-        const storageRef = ref(storage, 'workspaces/' + Date.now() + '_' + imageFile.name.replace(/\s+/g, '_'));
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-
-        // Save workspace data to Firestore
-        await addDoc(collection(db, "workspaces"), {
-            workspaceLocation,
-            fullAddress,
-            ownerName,
-            price,
-            ownerPhone,
-            availableCourses: selectedCourses,
-            resourcesAvailable: selectedResources,
-            workspaceDescription,
-            seatingCapacity,
-            imageUrl: downloadURL,
-            latitude: parseFloat(latitude),
-            longitude: parseFloat(longitude),
-            createdAt: new Date(),
-            status: "pending"
-        });
-
-        alert("Workspace submitted successfully! It will be reviewed before going live.");
-        window.location.href = 'index.html';
-        
-    } catch (error) {
-        console.error("Error submitting form:", error);
-        
-        if (error.code === 'storage/unauthorized') {
-            alert("Upload failed: You don't have permission to upload files.");
-        } else if (error.message.includes('image file')) {
-            alert(error.message);
-        } else {
-            alert("An error occurred: " + (error.message || "Please try again later."));
-        }
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit";
-    }
-});
-

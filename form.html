@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workspace Location Form</title>
     <link rel="stylesheet" href="./assets/css/form.css">
-    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -15,15 +14,14 @@
             <div class="logo">
                 <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
             </div>
-            
-            <div class="menu-toggle" onclick="toggleMenu()">
+            <div class="menu-toggle">
                 <span class="hamburger">&#9776;</span>
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="locationSearch.html">Find a Workspace</a></li>
-                <li><a href="form.html">Share your workspace</a></li>
-                <li><a href="#team.html">About Us</a></li>
+                <li><a href="locationSearch.html">Find Workspace</a></li>
+                <li><a href="form.html">Share your Workspace</a></li>
+                <li><a href="team.html">About Us</a></li>
             </ul>
             <div class="profile-icon">
                 <img src="./assets/images/profile_icon.jpg" alt="Profile Icon" class="profile-logo">
@@ -33,23 +31,23 @@
 
     <div class="container">
         <h2>List Your Workspace</h2>
-        <form id="location-form">
+        <form id="workspace-form">
             <div class="tag-input-container">
-                <label for="location-name">Your Workspace Location:</label>
-                <input type="text" id="location-name" class="tag-input" autocomplete="off" placeholder="Start typing a location...">
+                <label for="location-name">Your Location:</label>
+                <input type="text" id="location-name" class="tag-input" autocomplete="off" placeholder="Start typing a location..." required>
                 <span class="input-hint">Select a location from the suggestions</span>
                 <ul id="location-suggestions" class="suggestions-list"></ul>
             </div>
             
             <label for="full-address">Full Address:</label>
-            <textarea id="full-address" placeholder="Enter full address"></textarea>
+            <textarea id="full-address" placeholder="Enter full address" required></textarea>
 
             <label for="owner-name">Owner Name:</label>
-            <input type="text" id="owner-name" placeholder="Enter your name">
+            <input type="text" id="owner-name" placeholder="Enter your name" required>
 
             <div class="tag-input-container">
-                <label for="available-courses">Available Courses:</label>
-                <input type="text" id="available-courses" class="tag-input" placeholder="Type course name and press Enter">
+                <label for="available-courses">Your Course(s) of Choice:</label>
+                <input type="text" id="available-courses" class="tag-input" placeholder="Type course name" required>
                 <span class="input-hint">Type to search existing courses or create new ones by pressing Enter</span>
                 <ul id="course-suggestions" class="suggestions-list"></ul>
                 <div id="course-tags" class="tags-container"></div>
@@ -57,14 +55,14 @@
 
             <div class="tag-input-container">
                 <label for="available-resources">Available Resources:</label>
-                <input type="text" id="available-resources" class="tag-input" placeholder="Type resource name and press Enter">
+                <input type="text" id="available-resources" class="tag-input" placeholder="Type resource name">
                 <span class="input-hint">Type to search existing resources or create new ones by pressing Enter</span>
                 <ul id="resource-suggestions" class="suggestions-list"></ul>
                 <div id="resource-tags" class="tags-container"></div>
             </div>
 
             <label for="seating-capacity">Seating Capacity:</label>
-            <select id="seating-capacity">
+            <select id="seating-capacity" required>
                 <option value="">Select Number of Seats Available</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -79,36 +77,27 @@
                 <option value="none">None</option>
             </select>
 
-            <label for="description">Description:</label>
-            <textarea id="workspace-description" placeholder="Enter description"></textarea>
+            <label for="workspace-description">Description:</label>
+            <textarea id="workspace-description" placeholder="Enter description" required></textarea>
 
-            <label for="price">Price:</label>
-            <input type="text" id="price" placeholder="Enter price">
+            <label for="price">Price (₦):</label>
+            <input type="number" id="price" placeholder="Enter price" min="0" required>
 
             <label for="owner-phone">Phone Number:</label>
-            <input type="text" id="owner-phone" placeholder="Enter phone number">
+            <input type="tel" id="owner-phone" placeholder="Enter phone number" required>
 
             <label for="image-upload">Upload workspace Image:</label>
-            <input type="file" id="image-upload" accept="image/*">
+            <input type="file" id="image-upload" accept="image/*" required>
 
-            <input type="hidden" id="latitude">
-            <input type="hidden" id="longitude">
+            <input type="hidden" id="latitude" required>
+            <input type="hidden" id="longitude" required>
 
-            <button type="button" id="submit-button">Submit</button>
+            <button type="submit" id="submit-button">Submit</button>
         </form>
     </div>
 
-    <!-- Add Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Add Leaflet Control Geocoder JS -->
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script type="module" src="./assets/js/form.js"></script>
-    
-    <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-    </script>
 </body>
 </html>

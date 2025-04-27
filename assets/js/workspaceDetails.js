@@ -16,24 +16,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get workspace ID from URL
-const urlParams = new URLSearchParams(window.location.search);
-const workspaceId = urlParams.get('id');
-
-// Amenities mapping
-const amenitiesMap = {
-    'internet-wifi': { icon: 'fa-wifi', name: 'High-speed WiFi' },
-    'power-outlets': { icon: 'fa-plug', name: 'Power outlets' },
-    'printing': { icon: 'fa-print', name: 'Printing services' },
-    'coffee': { icon: 'fa-coffee', name: 'Free coffee' },
-    'parking': { icon: 'fa-car', name: 'Free parking' },
-    'air-conditioning': { icon: 'fa-snowflake', name: 'Air conditioning' }
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
+    // Get workspace ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const workspaceId = urlParams.get('id');
+
     if (!workspaceId) {
-        alert('No workspace specified');
-        window.location.href = 'locationSearch.html';
+        showError('No workspace specified', 'locationSearch.html');
         return;
     }
 
@@ -44,13 +33,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (docSnap.exists()) {
             const workspace = docSnap.data();
             populateWorkspaceData(workspace);
+            setupBookingForm();
+            setupMenuToggle();
         } else {
-            alert('Workspace not found');
-            window.location.href = 'locationSearch.html';
+            showError('Workspace not found', 'locationSearch.html');
         }
     } catch (error) {
         console.error("Error fetching workspace:", error);
-        alert('Error loading workspace details');
+        showError('Error loading workspace details');
     }
 });
 
@@ -61,38 +51,68 @@ function populateWorkspaceData(workspace) {
     document.getElementById('workspace-description-text').textContent = workspace.workspaceDescription || 'No description available';
     document.getElementById('host-name').textContent = workspace.ownerName || 'Host';
     document.getElementById('host-phone').textContent = workspace.ownerPhone || 'Phone not available';
-    document.getElementById('workspace-price').textContent = workspace.price || 'N/A';
+    document.getElementById('workspace-price').textContent = workspace.price ? `₦${workspace.price}` : 'Price not available';
 
-    // Main image
+    // Image handling
+    const mainImage = document.getElementById('workspace-main-image');
     if (workspace.imageUrl) {
-        document.getElementById('workspace-main-image').src = workspace.imageUrl;
-        // Set all gallery images to the same for now
-        document.querySelectorAll('.gallery img').forEach(img => {
-            img.src = workspace.imageUrl;
-        });
+        mainImage.src = workspace.imageUrl;
+        mainImage.onerror = () => {
+            mainImage.src = './assets/images/default-workspace.jpg';
+        };
+    } else {
+        mainImage.src = './assets/images/default-workspace.jpg';
     }
 
-    // Amenities
+    // Amenities - dynamically display all resources
     const amenitiesContainer = document.getElementById('amenities-container');
     amenitiesContainer.innerHTML = '';
 
-    if (workspace.resourcesAvailable && Array.isArray(workspace.resourcesAvailable)) {
+    if (workspace.resourcesAvailable?.length) {
         workspace.resourcesAvailable.forEach(resource => {
-            const amenity = amenitiesMap[resource];
-            if (amenity) {
-                const amenityElement = document.createElement('div');
-                amenityElement.className = 'amenity';
-                amenityElement.innerHTML = `
-                    <i class="fas ${amenity.icon}"></i>
-                    <span>${amenity.name}</span>
-                `;
-                amenitiesContainer.appendChild(amenityElement);
-            }
+            const amenityElement = createAmenityElement(resource);
+            amenitiesContainer.appendChild(amenityElement);
         });
+    } else {
+        amenitiesContainer.innerHTML = '<p class="no-amenities">No amenities listed</p>';
     }
+}
 
-    // Booking form submission
-    document.querySelector('.book-button').addEventListener('click', () => {
+function createAmenityElement(resourceName) {
+    const amenityElement = document.createElement('div');
+    amenityElement.className = 'amenity';
+    
+    // Smart icon selection
+    const icon = getIconForResource(resourceName);
+    
+    amenityElement.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${resourceName}</span>
+    `;
+    
+    return amenityElement;
+}
+
+function getIconForResource(resourceName) {
+    const lowerName = resourceName.toLowerCase();
+    
+    if (lowerName.includes('wifi') || lowerName.includes('internet')) return 'fa-wifi';
+    if (lowerName.includes('power') || lowerName.includes('outlet')) return 'fa-plug';
+    if (lowerName.includes('print')) return 'fa-print';
+    if (lowerName.includes('coffee')) return 'fa-coffee';
+    if (lowerName.includes('park')) return 'fa-parking';
+    if (lowerName.includes('computer')) return 'fa-desktop';
+    if (lowerName.includes('air') || lowerName.includes('ac')) return 'fa-snowflake';
+    if (lowerName.includes('desk')) return 'fa-table';
+    if (lowerName.includes('chair')) return 'fa-chair';
+    
+    return 'fa-check-circle'; // default icon
+}
+
+function setupBookingForm() {
+    document.querySelector('.book-button').addEventListener('click', (e) => {
+        e.preventDefault();
+        
         const date = document.getElementById('check-in').value;
         const hours = document.getElementById('hours').value;
         
@@ -103,5 +123,26 @@ function populateWorkspaceData(workspace) {
 
         // Here you would typically send the booking to your backend
         alert(`Booking requested for ${date} for ${hours} hours`);
+        
+        // Reset form
+        document.getElementById('check-in').value = '';
+        document.getElementById('hours').selectedIndex = 0;
     });
+}
+
+function setupMenuToggle() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+}
+
+function showError(message, redirectUrl = null) {
+    console.error(message);
+    alert(message);
+    if (redirectUrl) {
+        window.location.href = redirectUrl;
+    }
 }
