@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Peerflo - Local Collaboration Platform</title>
+    <link rel="stylesheet" href="index.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="./assets/css/about.css"> <!-- About page specific -->
+</head>
+<body>
+    <!-- Header (Synced with index.html) -->
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <img class="logo" src="./assets/images/peerflo_logo.jpg" alt="Peerflo Logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="locationSearch.html">Find Workspace</a></li>
+                <li><a href="form.html">Share Workspace</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+            </ul>
+            <div class="profile-icon">
+                <img src="./assets/images/profile_icon.gif" alt="Profile" class="profile-logo">
+                <span onclick="toggleMenu()" class="hamburger">&#9776;</span>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <ul class="mobile">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="locationSearch.html">Find Workspace</a></li>
+            <li><a href="form.html">Share Workspace</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <div class="hero-image-container">
+                <img src="./assets/images/coworking_1.jpg" alt="People collaborating at workspace">
+            </div>
+            <div class="hero-text">
+                <h1>Empowering Local Collaboration & Learning</h1>
+                <p>Connecting communities through shared workspaces</p>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section class="profile-section">
+            <div class="profile-card">
+                <h2>About Peerflo</h2>
+                <p>Peerflo is a location-based digital platform that connects individuals to nearby coworking spaces and peer learning hubs. We solve the problem of discovering local, affordable, and collaborative environments for work, learning, and networking—especially for freelancers, learners, startups, and remote teams.</p>
+            </div>
+
+            <!-- Offerings Grid -->
+            <div class="offerings-grid">
+                <div class="offering-card">
+                    <h3>Core Offerings</h3>
+                    <ul>
+                        <li>Discover  & book nearby peer-learning hubs and workspaces</li>
+                        <li>List coworking or peer-learning hubs</li>
+                        <li>Connect with local peer-learning groups and professionals</li>
+                        <li>Explore skill-building resources and collaborations</li>
+                    </ul>
+                </div>
+
+                <div class="offering-card">
+                    <h3>Target Audience</h3>
+                    <ul>
+                        <li>Freelancers & Remote Workers</li>
+                        <li>Students & Lifelong Learners</li>
+                        <li>Educators & Community Trainers</li>
+                        <li>Startups & Entrepreneurs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Impact Section -->
+            <div class="impact-card">
+                <h3>The Problem We Solve</h3>
+                <p>Many online learners lack access to physical human support and collaborative spaces for learning or working within their local communities, especially in underserved or non-urban areas. Peerflo bridges that gap by connecting them with physical spaces and communities that foster productivity and growth.</p>
+                
+                <h3>Our Impact Goal</h3>
+                <p>Drive digital inclusion and innovation from the grassroots by providing accessible platforms for peer-to-peer learning, collaboration, and professional development.</p>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-section">
+                <h2>Meet Our Team</h2>
+                <div class="team-grid">
+                    <!-- Team Member 1 -->
+                    <div class="team-card">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Obedson Uchenna N.</h3>
+                        <p class="team-role">Founder/CEO </p>
+                        <p class="team-bio">Leads the team, defines vision and strategy. Oversees fundraising, partnerships, and community engagement.</p>
+                    </div>
+                    
+                    <!-- Team Member 2 -->
+                    <div class="team-card">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Uzuagu Abigail Ada</h3>
+                        <p class="team-role">COO (Chief Operating Officer)</p>
+                        <p class="team-bio">Manages daily operations, workspace onboarding, and support systems. Skilled networker with experience in education and real estate.</p>
+                    </div>
+                    
+                    <!-- Additional team members (hidden initially) -->
+                    <div class="team-card hidden-team">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Nkechi Peace Nwabunike</h3>
+                        <p class="team-role">CTO (Chief Technology Officer)</p>
+                        <p class="team-bio">Oversees technology development, cybersecurity, and platform reliability. Computer Science and Cybersecurity background.</p>
+                    </div>
+                    
+                    <div class="team-card hidden-team">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Nkiru Igwe-Okechukwu C.</h3>
+                        <p class="team-role">CPO (Chief Product Officer)</p>
+                        <p class="team-bio">Focuses on user experience (UX), product features, and peer learning platform design. Cybersecurity knowledge + leadership experience.</p>
+                    </div>
+                    
+                    <div class="team-card hidden-team">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Ike-Muonso Chidimma. B</h3>
+                        <p class="team-role">CMO (Chief Marketing Officer)</p>
+                        <p class="team-bio">Leads marketing, branding, content creation, and user acquisition. Skilled in Data Analysis, Visualization, and Graphics.</p>
+                    </div>
+                    
+                    <div class="team-card hidden-team">
+                        <div class="team-photo-placeholder"></div>
+                        <h3>Purity Ebubechukwu Oguji</h3>
+                        <p class="team-role">CFO (Chief Financial Officer)</p>
+                        <p class="team-bio">Handles finances, fundraising planning, financial projections, and reporting. Background in health/public service + skills in AI/ML.</p>
+                    </div>
+                </div>
+                <button id="seeMoreBtn" class="see-more-btn">See More Team Members</button>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="about-cta">
+            <h2>Ready to join the movement?</h2>
+            <a href="locationSearch.html" class="cta-button">Find a Workspace</a>
+            <a href="form.html" class="cta-button secondary">List Your Space</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2024 Peerflo. All rights reserved.</p>
+    </footer>
+
+    <script src="./assets/js/util.js"></script>
+    
+</body>
+</html>

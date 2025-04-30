@@ -1,0 +1,281 @@
+/* about.css - Peerflo About Page Styles */
+/* Maintains all index.html styling while adding page-specific elements */
+
+/* ===== Hero Section ===== */
+.about-hero {
+  position: relative;
+  height: 400px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.hero-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8);
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  width: 90%;
+  max-width: 800px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.hero-text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+}
+
+/* ===== Content Sections ===== */
+.profile-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.profile-card, 
+.impact-card,
+.team-section {
+  background: white;
+  border-radius: 8px;
+  padding: 2.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.profile-card h2,
+.team-section h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+/* ===== Grid Layouts ===== */
+.offerings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.offering-card {
+  background: #f8f9f9;
+  padding: 2rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 4px solid #18bc9c;
+}
+
+.team-card {
+  background: #f8f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  border-top: 4px solid #3498db;
+}
+
+.team-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7f8c8d;
+  font-size: 3rem;
+}
+
+.team-role {
+  color: #3498db;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.team-bio {
+  color: #34495e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.hidden-team {
+  display: none;
+}
+
+.offering-card:hover,
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.offering-card h3 {
+  color: #2c3e50;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+}
+
+.offering-card ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.offering-card li {
+  margin-bottom: 0.8rem;
+  padding-left: 1.8rem;
+  position: relative;
+  color: #34495e;
+  line-height: 1.6;
+}
+
+.offering-card li:before {
+  content: "•";
+  color: #18bc9c;
+  font-weight: bold;
+  font-size: 1.4rem;
+  position: absolute;
+  left: 0.5rem;
+  top: -0.1rem;
+}
+
+/* ===== Impact Section ===== */
+.impact-card h3 {
+  color: #3498db;
+  margin: 1.8rem 0 1rem;
+  font-size: 1.4rem;
+}
+
+.impact-card p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+/* ===== CTA Section ===== */
+.about-cta {
+  text-align: center;
+  padding: 3rem 0;
+  background: #ecf0f1;
+}
+
+.about-cta h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background: #3498db;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: background 0.3s, transform 0.3s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.see-more-btn {
+  display: block;
+  background: #2c3e50;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 2rem auto 0;
+  transition: background 0.3s, transform 0.3s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.see-more-btn:hover {
+  background: #1a252f;
+  transform: translateY(-2px);
+}
+
+.cta-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+
+.cta-button.secondary {
+  background: #2c3e50;
+}
+
+.cta-button.secondary:hover {
+  background: #1a252f;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  .about-hero {
+      height: 300px;
+  }
+  
+  .hero-text h1 {
+      font-size: 2rem;
+  }
+  
+  .hero-text p {
+      font-size: 1rem;
+  }
+  
+  .profile-card, 
+  .impact-card,
+  .team-section {
+      padding: 1.8rem;
+  }
+  
+  .cta-button {
+      display: block;
+      margin: 10px auto;
+      max-width: 250px;
+  }
+
+  .team-grid {
+      grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero {
+      height: 250px;
+  }
+  
+  .hero-text h1 {
+      font-size: 1.6rem;
+  }
+  
+  .offering-card {
+      padding: 1.5rem;
+  }
+
+  .team-card {
+      padding: 1.2rem;
+  }
+}

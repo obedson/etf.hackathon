@@ -3,86 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace Search</title>
+    <title>Find Workspaces | Peerflo</title>
+    <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./assets/css/locationSearch.css">
-    <!-- Leaflet CSS for map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    
-    <!-- Firebase SDKs -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
-    <!-- jQuery for easier DOM manipulation -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
 </head>
 <body>
+    <!-- Header (Synced with index.html) -->
     <header>
         <nav class="navbar">
-            <div class="logo">
-                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
-            </div>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span class="hamburger">&#9776;</span>
+            <div class="logo-container">
+                <img class="logo" src="./assets/images/peerflo_logo.jpg" alt="Peerflo Logo">
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="locationSearch.html">Find Workspace</a></li>
-                <li><a href="form.html">Share your Workspace</a></li>
-                <li><a href="team.html">About Us</a></li>
+                <li><a href="locationSearch.html" class="active">Find Workspace</a></li>
+                <li><a href="form.html">Share Workspace</a></li>
+                <li><a href="about.html">About Us</a></li>
             </ul>
             <div class="profile-icon">
-                <img src="./assets/images/profile_icon.gif" alt="Profile Icon" class="profile-logo">
+                <img src="./assets/images/profile_icon.gif" alt="Profile" class="profile-logo">
+                <span onclick="toggleMenu()" class="hamburger">&#9776;</span>
             </div>
         </nav>
+        <!-- Mobile Menu -->
+        <ul class="mobile">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="locationSearch.html">Find Workspace</a></li>
+            <li><a href="form.html">Share Workspace</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
     </header>
 
-    <div class="container">
-        <h2>Find Workspace Near You</h2>
-        <div class="search-form">
-            <div class="form-group">
-                <label for="location-input">Where is Your Location ?</label>
-                <input type="text" id="location-input" placeholder="Start typing your location">
-                <ul id="location-suggestions"></ul>
+    <main class="search-container">
+        <!-- Search Section -->
+        <section class="search-section">
+            <h1>Find Workspaces Near You</h1>
+            <div class="search-form">
+                <div class="search-input-group">
+                    <div class="form-group">
+                        <label for="location-input"><i class="fas fa-map-marker-alt"></i> Location</label>
+                        <input type="text" id="location-input" placeholder="Enter your location">
+                        <ul id="location-suggestions" class="suggestions-list"></ul>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="course-select"><i class="fas fa-book"></i> Interested In</label>
+                        <select id="course-select">
+                            <option value="">Any course</option>
+                            <!-- Options will be dynamically added -->
+                        </select>
+                    </div>
+                    
+                    <button id="search-button" class="search-button">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label for="available-courses">What are you interest in ?:</label>
-                <select id="available-courses">
-                    <option value="">Select a skill</option>
-                    <!-- Options will be dynamically added here -->
-                </select>
-            </div>
-            
-            <button id="search-button" class="primary-button">Search Workspaces</button>
-        </div>
-        
-        <div id="map"></div>
-        <div id="product-results"></div>
-    </div>
+        </section>
 
-    <main>
+        <!-- Map Section -->
+        <section class="map-section">
+            <div id="map"></div>
+            <div class="map-controls">
+                <button id="use-location-btn" class="map-control-button">
+                    <i class="fas fa-location-arrow"></i> Use My Location
+                </button>
+                <button id="reset-map-btn" class="map-control-button">
+                    <i class="fas fa-sync-alt"></i> Reset Map
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <div class="results-header">
+                <h2 id="results-title">Available Workspaces</h2>
+                <div class="sort-options">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="distance">Distance</option>
+                        <option value="price-low">Price (Low to High)</option>
+                        <option value="price-high">Price (High to Low)</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="workspace-results" class="workspace-results-grid">
+                <!-- Workspace cards will be inserted here -->
+            </div>
+            
+            <div id="loading-spinner" class="loading-spinner hidden">
+                <i class="fas fa-spinner fa-spin"></i> Loading...
+            </div>
+            
+            <div id="no-results" class="no-results hidden">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>No workspaces found</h3>
+                <p>Try adjusting your search filters or location</p>
+            </div>
+        </section>
+
+        <!-- Sponsored Section -->
         <section class="sponsored-section">
-            <h2>Sponsored Workspaces:</h2>
-            <div id="sponsored-results"></div>
+            <h2><i class="fas fa-star"></i> Featured Workspaces</h2>
+            <div id="sponsored-results" class="workspace-results-grid">
+                <!-- Sponsored workspace cards will be inserted here -->
+            </div>
         </section>
     </main>
 
-    <footer>
-        <p>Follow us: 
-            <a href="#">Facebook</a>
-            <a href="#">Twitter</a>
-            <a href="#">Instagram</a>
-            <a href="#">Youtube</a>
-        </p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>&copy; 2024 Peerflo. All rights reserved.</p>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script type="module" src="./assets/js/locationSearch.js"></script>
+    <script src="./assets/js/util.js "></script>
 
-    <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-    </script>
+    <script type="module" src="./assets/js/locationSearch.js"></script>
 </body>
 </html>

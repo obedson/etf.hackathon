@@ -3,101 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace Location Form</title>
+    <title>Share Your Workspace | Peerflo</title>
+    <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./assets/css/form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
 </head>
 <body>
+    <!-- Header -->
     <header>
         <nav class="navbar">
-            <div class="logo">
-                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
-            </div>
-            <div class="menu-toggle">
-                <span class="hamburger">&#9776;</span>
+            <div class="logo-container">
+                <img class="logo" src="./assets/images/peerflo_logo.jpg" alt="Peerflo Logo">
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="locationSearch.html">Find Workspace</a></li>
-                <li><a href="form.html">Share your Workspace</a></li>
-                <li><a href="team.html">About Us</a></li>
+                <li><a href="form.html" class="active">Share Workspace</a></li>
+                <li><a href="about.html">About Us</a></li>
             </ul>
             <div class="profile-icon">
-                <img src="./assets/images/profile_icon.jpg" alt="Profile Icon" class="profile-logo">
+                <img src="./assets/images/profile_icon.gif" alt="Profile" class="profile-logo">
+                <span onclick="toggleMenu()" class="hamburger">&#9776;</span>
             </div>
         </nav>
+        <!-- Mobile Menu -->
+        <ul class="mobile">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="locationSearch.html">Find Workspace</a></li>
+            <li><a href="form.html">Share Workspace</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
     </header>
 
-    <div class="container">
+    <!-- Main Form Container -->
+    <div class="form-container">
         <h2>List Your Workspace</h2>
         <form id="workspace-form">
-            <div class="tag-input-container">
-                <label for="location-name">Your Location:</label>
-                <input type="text" id="location-name" class="tag-input" autocomplete="off" placeholder="Start typing a location..." required>
-                <span class="input-hint">Select a location from the suggestions</span>
-                <ul id="location-suggestions" class="suggestions-list"></ul>
-            </div>
-            
-            <label for="full-address">Full Address:</label>
-            <textarea id="full-address" placeholder="Enter full address" required></textarea>
-
-            <label for="owner-name">Owner Name:</label>
-            <input type="text" id="owner-name" placeholder="Enter your name" required>
-
-            <div class="tag-input-container">
-                <label for="available-courses">Your Course(s) of Choice:</label>
-                <input type="text" id="available-courses" class="tag-input" placeholder="Type course name" required>
-                <span class="input-hint">Type to search existing courses or create new ones by pressing Enter</span>
-                <ul id="course-suggestions" class="suggestions-list"></ul>
-                <div id="course-tags" class="tags-container"></div>
+            <!-- Location Section -->
+            <div class="form-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Location Details</h3>
+                <div class="form-group tag-input-container">
+                    <label for="location-name">Location Name:</label>
+                    <input type="text" id="location-name" class="tag-input" placeholder="Start typing your location..." required>
+                    <span class="input-hint">Select from suggestions</span>
+                    <div class="error-message"></div>
+                    <ul id="location-suggestions" class="suggestions-list"></ul>
+                </div>
+                
+                <div class="form-group">
+                    <label for="full-address">Full Address:</label>
+                    <textarea id="full-address" placeholder="Enter complete address" required></textarea>
+                    <div class="error-message"></div>
+                </div>
             </div>
 
-            <div class="tag-input-container">
-                <label for="available-resources">Available Resources:</label>
-                <input type="text" id="available-resources" class="tag-input" placeholder="Type resource name">
-                <span class="input-hint">Type to search existing resources or create new ones by pressing Enter</span>
-                <ul id="resource-suggestions" class="suggestions-list"></ul>
-                <div id="resource-tags" class="tags-container"></div>
+            <!-- Owner Information -->
+            <div class="form-section">
+                <h3><i class="fas fa-user"></i> Owner Information</h3>
+                <div class="form-group">
+                    <label for="owner-name">Your Name:</label>
+                    <input type="text" id="owner-name" placeholder="Enter your full name" required>
+                    <div class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="owner-phone">Phone Number:</label>
+                    <input type="tel" id="owner-phone" placeholder="Enter phone number" required>
+                    <div class="error-message"></div>
+                </div>
             </div>
 
-            <label for="seating-capacity">Seating Capacity:</label>
-            <select id="seating-capacity" required>
-                <option value="">Select Number of Seats Available</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="none">None</option>
-            </select>
+            <!-- Workspace Details -->
+            <div class="form-section">
+                <h3><i class="fas fa-building"></i> Workspace Details</h3>
+                <div class="form-group">
+                    <label for="seating-capacity">Seating Capacity:</label>
+                    <select id="seating-capacity" required>
+                        <option value="">Select capacity</option>
+                        <option value="1-5">1-5 people</option>
+                        <option value="6-10">6-10 people</option>
+                        <option value="11-20">11-20 people</option>
+                        <option value="20+">20+ people</option>
+                    </select>
+                    <div class="error-message"></div>
+                </div>
 
-            <label for="workspace-description">Description:</label>
-            <textarea id="workspace-description" placeholder="Enter description" required></textarea>
+                <div class="form-group">
+                    <label for="workspace-description">Description:</label>
+                    <textarea id="workspace-description" placeholder="Describe your workspace (facilities, atmosphere, etc.)" required></textarea>
+                    <div class="error-message"></div>
+                </div>
 
-            <label for="price">Price (₦):</label>
-            <input type="number" id="price" placeholder="Enter price" min="0" required>
+                <div class="form-group">
+                    <label for="price">Price (₦ per hour):</label>
+                    <input type="number" id="price" placeholder="Enter hourly rate" min="0" required>
+                    <div class="error-message"></div>
+                </div>
+            </div>
 
-            <label for="owner-phone">Phone Number:</label>
-            <input type="tel" id="owner-phone" placeholder="Enter phone number" required>
+            <!-- Courses & Resources -->
+            <div class="form-section">
+                <h3><i class="fas fa-book"></i> Offerings</h3>
+                <div class="form-group tag-input-container">
+                    <label for="available-courses">Available Courses:</label>
+                    <input type="text" id="available-courses" class="tag-input" placeholder="Type course name">
+                    <span class="input-hint">Press Enter to add</span>
+                    <div class="error-message"></div>
+                    <ul id="course-suggestions" class="suggestions-list"></ul>
+                    <div id="course-tags" class="tags-container"></div>
+                </div>
 
-            <label for="image-upload">Upload workspace Image:</label>
-            <input type="file" id="image-upload" accept="image/*" required>
+                <div class="form-group tag-input-container">
+                    <label for="available-resources">Available Resources:</label>
+                    <input type="text" id="available-resources" class="tag-input" placeholder="Type resource name">
+                    <span class="input-hint">Press Enter to add</span>
+                    <div class="error-message"></div>
+                    <ul id="resource-suggestions" class="suggestions-list"></ul>
+                    <div id="resource-tags" class="tags-container"></div>
+                </div>
+            </div>
 
-            <input type="hidden" id="latitude" required>
-            <input type="hidden" id="longitude" required>
+            <!-- Image Upload -->
+            <div class="form-section">
+                <h3><i class="fas fa-camera"></i> Images</h3>
+                <div class="form-group">
+                    <label for="image-upload">Upload Workspace Photos:</label>
+                    <input type="file" id="image-upload" accept="image/*" multiple required>
+                    <div class="error-message"></div>
+                    <div id="image-preview" class="image-preview-container"></div>
+                </div>
+            </div>
 
-            <button type="submit" id="submit-button">Submit</button>
+            <input type="hidden" id="latitude">
+            <input type="hidden" id="longitude">
+
+            <button type="submit" class="submit-button" id="submit-button">
+                <span id="submit-text">Submit Listing</span>
+                <span id="submit-spinner" class="hidden">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
         </form>
     </div>
 
+    <!-- Form Messages Container -->
+    <div id="form-messages" class="form-messages"></div>
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="./assets/js/util.js "></script>
     <script type="module" src="./assets/js/form.js"></script>
 </body>
 </html>

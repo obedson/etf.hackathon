@@ -16,73 +16,138 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// DOM Elements
+const elements = {
+    workspaceName: document.getElementById('workspace-name'),
+    workspaceAddress: document.getElementById('workspace-address'),
+    workspaceDescription: document.getElementById('workspace-description-text'),
+    hostName: document.getElementById('host-name'),
+    hostPhone: document.getElementById('host-phone'),
+    workspacePrice: document.getElementById('workspace-price'),
+    mainImage: document.getElementById('workspace-main-image'),
+    amenitiesContainer: document.getElementById('amenities-container'),
+    coursesContainer: document.getElementById('courses-container'),
+    bookingForm: document.querySelector('.booking-form'),
+    bookButton: document.getElementById('book-now-btn'),
+    bookingDate: document.getElementById('booking-date'),
+    bookingHours: document.getElementById('booking-hours'),
+    thumbnailContainer: document.getElementById('thumbnail-container')
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // Get workspace ID from URL
+    try {
+        const workspaceId = getWorkspaceIdFromURL();
+        if (!workspaceId) return;
+
+        const workspace = await fetchWorkspaceData(workspaceId);
+        if (!workspace) return;
+
+        populateWorkspaceData(workspace);
+        setupImageGallery(workspace);
+        setupEventListeners();
+    } catch (error) {
+        console.error("Error initializing page:", error);
+        showError('Error loading workspace details');
+    }
+});
+
+function getWorkspaceIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const workspaceId = urlParams.get('id');
 
     if (!workspaceId) {
         showError('No workspace specified', 'locationSearch.html');
-        return;
+        return null;
     }
+    return workspaceId;
+}
 
-    try {
-        const docRef = doc(db, "workspaces", workspaceId);
-        const docSnap = await getDoc(docRef);
+async function fetchWorkspaceData(workspaceId) {
+    const docRef = doc(db, "workspaces", workspaceId);
+    const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            const workspace = docSnap.data();
-            populateWorkspaceData(workspace);
-            setupBookingForm();
-            setupMenuToggle();
-        } else {
-            showError('Workspace not found', 'locationSearch.html');
-        }
-    } catch (error) {
-        console.error("Error fetching workspace:", error);
-        showError('Error loading workspace details');
+    if (!docSnap.exists()) {
+        showError('Workspace not found', 'locationSearch.html');
+        return null;
     }
-});
+    return docSnap.data();
+}
 
 function populateWorkspaceData(workspace) {
     // Basic info
-    document.getElementById('workspace-name').textContent = workspace.workspaceLocation || 'Workspace';
-    document.getElementById('workspace-address').textContent = workspace.fullAddress || 'Address not available';
-    document.getElementById('workspace-description-text').textContent = workspace.workspaceDescription || 'No description available';
-    document.getElementById('host-name').textContent = workspace.ownerName || 'Host';
-    document.getElementById('host-phone').textContent = workspace.ownerPhone || 'Phone not available';
-    document.getElementById('workspace-price').textContent = workspace.price ? `₦${workspace.price}` : 'Price not available';
+    elements.workspaceName.textContent = workspace.workspaceLocation || 'Workspace';
+    elements.workspaceAddress.textContent = workspace.fullAddress || 'Address not available';
+    elements.workspaceDescription.textContent = workspace.workspaceDescription || 'No description available';
+    elements.hostName.textContent = workspace.ownerName || 'Host';
+    elements.hostPhone.textContent = workspace.ownerPhone || 'Phone not available';
+    elements.workspacePrice.textContent = workspace.price ? workspace.price.toLocaleString() : 'N/A';
 
-    // Image handling
-    const mainImage = document.getElementById('workspace-main-image');
+    // Set default image
+    elements.mainImage.src = workspace.imageUrl || './assets/images/default-workspace.jpg';
+    elements.mainImage.onerror = () => {
+        elements.mainImage.src = './assets/images/default-workspace.jpg';
+    };
+
+    // Amenities
+    renderAmenities(workspace.resourcesAvailable || []);
+    
+    // Courses
+    renderCourses(workspace.availableCourses || []);
+}
+
+function setupImageGallery(workspace) {
+    // For now we only have one image, but this can be expanded
     if (workspace.imageUrl) {
-        mainImage.src = workspace.imageUrl;
-        mainImage.onerror = () => {
-            mainImage.src = './assets/images/default-workspace.jpg';
-        };
-    } else {
-        mainImage.src = './assets/images/default-workspace.jpg';
-    }
-
-    // Amenities - dynamically display all resources
-    const amenitiesContainer = document.getElementById('amenities-container');
-    amenitiesContainer.innerHTML = '';
-
-    if (workspace.resourcesAvailable?.length) {
-        workspace.resourcesAvailable.forEach(resource => {
-            const amenityElement = createAmenityElement(resource);
-            amenitiesContainer.appendChild(amenityElement);
+        const thumbnail = createThumbnail(workspace.imageUrl);
+        thumbnail.addEventListener('click', () => {
+            elements.mainImage.src = workspace.imageUrl;
         });
-    } else {
-        amenitiesContainer.innerHTML = '<p class="no-amenities">No amenities listed</p>';
+        elements.thumbnailContainer.appendChild(thumbnail);
     }
+}
+
+function createThumbnail(imageUrl) {
+    const thumbnail = document.createElement('img');
+    thumbnail.src = imageUrl;
+    thumbnail.alt = 'Workspace thumbnail';
+    thumbnail.className = 'thumbnail';
+    return thumbnail;
+}
+
+function renderAmenities(amenities) {
+    elements.amenitiesContainer.innerHTML = '';
+
+    if (amenities.length === 0) {
+        elements.amenitiesContainer.innerHTML = '<p class="no-amenities">No amenities listed</p>';
+        return;
+    }
+
+    amenities.forEach(amenity => {
+        const amenityElement = createAmenityElement(amenity);
+        elements.amenitiesContainer.appendChild(amenityElement);
+    });
+}
+
+function renderCourses(courses) {
+    elements.coursesContainer.innerHTML = '';
+
+    if (courses.length === 0) {
+        elements.coursesContainer.innerHTML = '<p class="no-amenities">No courses listed</p>';
+        return;
+    }
+
+    courses.forEach(course => {
+        const courseElement = document.createElement('span');
+        courseElement.className = 'course-tag';
+        courseElement.textContent = course;
+        elements.coursesContainer.appendChild(courseElement);
+    });
 }
 
 function createAmenityElement(resourceName) {
     const amenityElement = document.createElement('div');
     amenityElement.className = 'amenity';
     
-    // Smart icon selection
     const icon = getIconForResource(resourceName);
     
     amenityElement.innerHTML = `
@@ -94,55 +159,114 @@ function createAmenityElement(resourceName) {
 }
 
 function getIconForResource(resourceName) {
+    const iconMap = {
+        wifi: 'fa-wifi',
+        internet: 'fa-wifi',
+        power: 'fa-plug',
+        outlet: 'fa-plug',
+        print: 'fa-print',
+        coffee: 'fa-coffee',
+        parking: 'fa-parking',
+        computer: 'fa-desktop',
+        laptop: 'fa-laptop',
+        air: 'fa-snowflake',
+        ac: 'fa-snowflake',
+        desk: 'fa-book-reader',
+        chair: 'fa-chair',
+        meetup: 'fa-users',
+        assistance: 'fa-user',
+        collaboration: 'fa-handshake'
+    };
+
     const lowerName = resourceName.toLowerCase();
-    
-    if (lowerName.includes('wifi') || lowerName.includes('internet')) return 'fa-wifi';
-    if (lowerName.includes('power') || lowerName.includes('outlet')) return 'fa-plug';
-    if (lowerName.includes('print')) return 'fa-print';
-    if (lowerName.includes('coffee')) return 'fa-coffee';
-    if (lowerName.includes('park')) return 'fa-parking';
-    if (lowerName.includes('computer')) return 'fa-desktop';
-    if (lowerName.includes('air') || lowerName.includes('ac')) return 'fa-snowflake';
-    if (lowerName.includes('desk')) return 'fa-table';
-    if (lowerName.includes('chair')) return 'fa-chair';
+    for (const [key, icon] of Object.entries(iconMap)) {
+        if (lowerName.includes(key)) return icon;
+    }
     
     return 'fa-check-circle'; // default icon
 }
 
-function setupBookingForm() {
-    document.querySelector('.book-button').addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const date = document.getElementById('check-in').value;
-        const hours = document.getElementById('hours').value;
-        
-        if (!date) {
-            alert('Please select a date');
-            return;
-        }
+function setupEventListeners() {
+    // Mobile menu
+    const menuToggle = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile');
+    
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            menuToggle.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+        });
+    }
 
-        // Here you would typically send the booking to your backend
-        alert(`Booking requested for ${date} for ${hours} hours`);
-        
-        // Reset form
-        document.getElementById('check-in').value = '';
-        document.getElementById('hours').selectedIndex = 0;
-    });
+    // Booking form
+    elements.bookButton.addEventListener('click', handleBooking);
+    elements.bookingHours.addEventListener('change', updatePriceDisplay);
+    elements.bookingDate.min = new Date().toISOString().split('T')[0];
 }
 
-function setupMenuToggle() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+function handleBooking(e) {
+    e.preventDefault();
     
-    menuToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
+    const date = elements.bookingDate.value;
+    const hours = elements.bookingHours.value;
+    
+    if (!date) {
+        showMessage('Please select a date', 'error');
+        return;
+    }
+
+    // Calculate price based on hours
+    const pricePerDay = parseInt(elements.workspacePrice.textContent.replace(/,/g, '')) || 0;
+    const hoursRate = {
+        '4': 0.25,
+        '8': 0.5,
+        '12': 0.75,
+        '24': 1
+    };
+    const totalPrice = pricePerDay * hoursRate[hours];
+
+    // In a real app, you would send this to your backend
+    showMessage(`Booking confirmed for ${date} (${hours} hours). Total: ₦${totalPrice.toLocaleString()}`, 'success');
+    
+    // Reset form
+    elements.bookingForm.reset();
+}
+
+function updatePriceDisplay() {
+    // This would update the price summary in a real implementation
+    console.log('Booking duration changed:', elements.bookingHours.value);
+}
+
+function showMessage(message, type = 'success') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.innerHTML = `
+        <span>${message}</span>
+        <button class="close-message"><i class="fas fa-times"></i></button>
+    `;
+    
+    const messagesContainer = document.getElementById('form-messages');
+    messagesContainer.appendChild(messageDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => messageDiv.remove(), 300);
+    }, 5000);
+    
+    // Manual close
+    messageDiv.querySelector('.close-message').addEventListener('click', () => {
+        messageDiv.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => messageDiv.remove(), 300);
     });
 }
 
 function showError(message, redirectUrl = null) {
     console.error(message);
-    alert(message);
+    showMessage(message, 'error');
     if (redirectUrl) {
-        window.location.href = redirectUrl;
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 3000);
     }
 }

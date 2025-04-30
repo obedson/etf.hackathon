@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace Details</title>
+    <title>Workspace Details | Peerflo</title>
+    <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./assets/css/workspaceDetails.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Header (Synced with index.html) -->
     <header>
         <nav class="navbar">
-            <div class="logo">
-                <img src="./assets/images/peerflo_logo.png" alt="Peerflo Logo">
-            </div>
-            
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span class="hamburger">&#9776;</span>
+            <div class="logo-container">
+                <img class="logo" src="./assets/images/peerflo_logo.jpg" alt="Peerflo Logo">
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="locationSearch.html">Find Workspace</a></li>
-                <li><a href="form.html">Share your Workspace</a></li>
-                <li><a href="team.html">About Us</a></li>
+                <li><a href="form.html">Share Workspace</a></li>
+                <li><a href="about.html">About Us</a></li>
             </ul>
             <div class="profile-icon">
-                <img src="./assets/images/profile_icon.jpg" alt="Profile Icon" class="profile-logo">
+                <img src="./assets/images/profile_icon.gif" alt="Profile" class="profile-logo">
+                <span onclick="toggleMenu()" class="hamburger">&#9776;</span>
             </div>
         </nav>
+        <!-- Mobile Menu -->
+        <ul class="mobile">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="locationSearch.html">Find Workspace</a></li>
+            <li><a href="form.html">Share Workspace</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
     </header>
 
     <main class="workspace-container">
@@ -34,13 +40,10 @@
         <section class="gallery-section">
             <div class="gallery">
                 <div class="gallery-main">
-                    <img id="workspace-main-image" src="" alt="Workspace main image">
+                    <img id="workspace-main-image" src="" alt="Workspace main image" class="active-image">
                 </div>
-                <div class="gallery-thumbnails">
-                    <img src="" alt="Workspace image 1">
-                    <img src="" alt="Workspace image 2">
-                    <img src="" alt="Workspace image 3">
-                    <img src="" alt="Workspace image 4">
+                <div class="gallery-thumbnails" id="thumbnail-container">
+                    <!-- Thumbnails will be dynamically inserted here -->
                 </div>
             </div>
         </section>
@@ -48,28 +51,48 @@
         <!-- Workspace Details -->
         <section class="details-section">
             <div class="workspace-header">
-                <h1 id="workspace-name"></h1>
+                <h1 id="workspace-name">Workspace Name</h1>
                 <div class="workspace-location">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span id="workspace-address"></span>
+                    <span id="workspace-address">Location Address</span>
+                </div>
+                <div class="workspace-rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-count">(24 reviews)</span>
                 </div>
             </div>
 
             <div class="workspace-host">
-                <h2>Hosted by <span id="host-name"></span></h2>
-                <p><i class="fas fa-phone"></i> <span id="host-phone"></span></p>
+                <h2>Hosted by <span id="host-name">John Doe</span></h2>
+                <p><i class="fas fa-phone"></i> <span id="host-phone">+1234567890</span></p>
+                <p><i class="fas fa-clock"></i> Response time: within 2 hours</p>
             </div>
 
             <hr class="divider">
 
             <div class="workspace-description">
                 <h2>About this space</h2>
-                <p id="workspace-description-text"></p>
+                <p id="workspace-description-text">Detailed description of the workspace goes here...</p>
             </div>
 
             <div class="amenities">
                 <h2>What this place offers</h2>
                 <div class="amenities-grid" id="amenities-container">
+                    <!-- Dynamically populated -->
+                    <div class="amenity">
+                        <i class="fas fa-wifi"></i>
+                        <span>High-speed WiFi</span>
+                    </div>
+                    <div class="amenity">
+                        <i class="fas fa-coffee"></i>
+                        <span>Free coffee/tea</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace-courses">
+                <h2>Available Courses</h2>
+                <div class="courses-tags" id="courses-container">
                     <!-- Dynamically populated -->
                 </div>
             </div>
@@ -77,36 +100,54 @@
 
         <!-- Booking Card -->
         <aside class="booking-card">
-            <div class="price"> ₦ <span id="workspace-price"> </span> <span>per day</span></div>
+            <div class="price"> ₦ <span id="workspace-price">5,000</span> <span>per day</span></div>
             
             <div class="booking-form">
                 <div class="form-group">
-                    <label for="check-in">Date</label>
-                    <input type="date" id="check-in">
+                    <label for="booking-date">Date</label>
+                    <input type="date" id="booking-date" min="">
                 </div>
                 
                 <div class="form-group">
-                    <label for="hours">Hours</label>
-                    <select id="hours">
+                    <label for="booking-hours">Hours</label>
+                    <select id="booking-hours">
                         <option value="4">4 hours</option>
                         <option value="8">8 hours</option>
                         <option value="12">12 hours</option>
                         <option value="24">Full day</option>
                     </select>
                 </div>
+
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>₦5,000 x 1 day</span>
+                        <span>₦5,000</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span>₦5,000</span>
+                    </div>
+                </div>
                 
-                <button class="book-button">Reserve</button>
+                <button class="book-button" id="book-now-btn">
+                    <i class="fas fa-calendar-check"></i> Reserve Now
+                </button>
             </div>
         </aside>
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>&copy; 2024 Peerflo. All rights reserved.</p>
+    </footer>
+    <script src="./assets/js/util.js "></script>
+
     <script type="module" src="./assets/js/workspaceDetails.js"></script>
-    
-    <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-    </script>
 </body>
 </html>
